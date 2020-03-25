@@ -4,6 +4,29 @@ These guides assume that the Arris NTD is listening on `192.168.0.1/24` therefor
 The following devices appear to sort it out automatically:
   * Asus AC68/58 series
   * Google Wifi
+  
+## Mikrotik [RouterBOARD] (https://www.mikrotik.com) Products
+If you use Mikrotik RouterOS-based products such as the RB2011, RB951 or hAP-AC. Use the below steps to setup access to the Arris Web Interface, assuming your NTD is plugged into ether1.
+```
+[admin@Mikrotik] >
+
+/ip firewall nat
+add action=masquerade chain=srcnat out-interface=ether1
+
+/ip address
+add address=192.168.0.2 interface=ether1 network=255.255.255.0
+
+/ip arp
+add address=192.168.0.1 interface=ether1 mac-address=50:95:51:54:XX:XX
+
+```
+Once this has been completed, the following entry should be in your ARP table. You should be able to access the Arris Web Interface now.
+```
+[admin@Mikrotik] /ip arp> print where interface=ether1 
+Flags: X - disabled, I - invalid, H - DHCP, D - dynamic, P - published, C - complete 
+ #    ADDRESS         MAC-ADDRESS       INTERFACE                                                                                                                                                                                                                                                                                         
+ 0  C 192.168.0.1     50:95:51:54:XX:XX ether1
+```
 
 ## Ubiquiti [EdgeMAX](https://www.ui.com/products/#edgemax) & [Unifi USG](https://www.ui.com/products/#unifi) Products
 As an UBNT user, the below should gain you access assuming NBN has not disabled access. Has been tested on Edgerouter and Unifi USG hardware.
